@@ -282,7 +282,7 @@
           id: 1, 
           title: 'SANXINGDUI·CODE-X', 
           subtitle: '沉浸式空间设计', 
-          img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/main/111.png',
+          img: './111.png',
           fallback: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
           route: 'project-sanxingdui' 
         },
@@ -290,7 +290,7 @@
           id: 2, 
           title: '瓷艺坊', 
           subtitle: '视觉与UI设计', 
-          img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/main/%E5%90%AF%E5%8A%A8.jpg',
+          img: './启动.jpg',
           fallback: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
           route: 'project-ciyifang'
         }
@@ -489,7 +489,7 @@
               </div>
             </div>
 
-            {/* 05. 界面设计展示 (更新：图片移入启动/登录模块并自适应高度) */}
+            {/* 05. 界面设计展示 (更新：使用相对路径加载更快) */}
             <div className="flex flex-col gap-8 anim-slam opacity-0" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>
               <div className="text-center mb-4">
                 <h2 className="text-4xl md:text-5xl font-black italic inline-block bg-[var(--glitch-blue)] text-white px-8 py-2 clip-jagged">05 / 界面展示</h2>
@@ -498,21 +498,21 @@
               <div className="w-full bg-white p-4 border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
                 <h3 className="text-2xl font-heavy-zh mb-4 italic">高保真界面：启动 / 登录 / 游戏主页</h3>
                 <div className="w-full h-auto bg-gray-200 border-2 border-black overflow-hidden relative group">
-                  <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/main/6bdebb15ddfaebe0df2173c8252aee5d.png" alt="启动登录展示" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                  <img src="./6bdebb15ddfaebe0df2173c8252aee5d.png" alt="启动登录展示" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                 </div>
               </div>
 
               <div className="w-full bg-white p-4 border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
                 <h3 className="text-2xl font-heavy-zh mb-4 italic">高保真界面：游戏流程</h3>
                 <div className="aspect-video w-full bg-gray-200 border-2 border-black overflow-hidden relative group">
-                  <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/main/91fc443ad34dde945f9fd9295522b9c4.png" alt="游戏流程" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                  <img src="./91fc443ad34dde945f9fd9295522b9c4.png" alt="游戏流程" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                 </div>
               </div>
 
               <div className="w-full bg-black p-4 border-4 border-[var(--glitch-blue)] shadow-[8px_8px_0_0_var(--glitch-blue)]">
                 <h3 className="text-2xl font-heavy-zh mb-4 italic text-white">最终效果展示</h3>
                 <div className="aspect-video w-full bg-gray-800 border-2 border-white overflow-hidden relative group">
-                  <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/main/Mockup48.png" alt="效果展示" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                  <img src="./Mockup48.png" alt="效果展示" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                 </div>
               </div>
 
@@ -545,13 +545,12 @@
       ];
 
       const acts = [
-        { num: '第一幕', title: '起源', desc: '以古蜀先民浮雕与神秘阶梯场景，拉开古蜀文明诞生的序幕，展现三星堆文明的初始脉络与神秘氛围。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/2de5423157ac6839de24e37e3880055ff8e318d7/226c9736d3a0781c23063e6a818067ae.png' },
-        { num: '第二幕', title: '凝聚', desc: '以粒子特效呈现三星堆青铜神树，在光影流转中凝聚古蜀文明的神秘力量与精神图腾。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/fe99ccaad6baec32fa847ff6022c140c.png' },
-        { num: '第三幕', title: '飘散', desc: '以粒子光影解构青铜神树、纵目面具等核心文物，神鸟羽翼、神树枝干化作星尘飘散，演绎古蜀祭祀的告别与文明精神的时空升华，尽显神秘与浪漫。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/f1b65e9fdffe3972d639a1cc0fa43130.png' },
-        { num: '第四幕', title: '再次凝聚', desc: '以古蜀先民浮雕与神秘阶梯场景，拉开古蜀文明诞生的序幕，展现三星堆文明的初始脉络与神秘氛围。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/118010efb84403bc99b09c70108ca42b.png' },
-        // 已更新为新的图片链接
-        { num: '第五幕', title: '看见文物', desc: '以傩戏音乐赋能交互，青铜面具、神树等文物粒子进行音画切换，融合古蜀祭祀与民俗韵律，唤醒文明的鲜活记忆与情感共鸣。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/65725304f56f03f16cfa6f868d0ed00b.png' },
-        { num: '第六幕', title: '再现历史', desc: '以抽象粒子光影演绎文明流变，古蜀符号随光影沉浮流转，勾勒千年文脉绵延轨迹，让三星堆精神在时空长河里永续回响。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/9756459f2a7db1b78885c8e7b64e7459.png' },
+        { num: '第一幕', title: '起源', desc: '以古蜀先民浮雕与神秘阶梯场景，拉开古蜀文明诞生的序幕，展现三星堆文明的初始脉络与神秘氛围。', img: './226c9736d3a0781c23063e6a818067ae.png' },
+        { num: '第二幕', title: '凝聚', desc: '以粒子特效呈现三星堆青铜神树，在光影流转中凝聚古蜀文明的神秘力量与精神图腾。', img: './fe99ccaad6baec32fa847ff6022c140c.png' },
+        { num: '第三幕', title: '飘散', desc: '以粒子光影解构青铜神树、纵目面具等核心文物，神鸟羽翼、神树枝干化作星尘飘散，演绎古蜀祭祀的告别与文明精神的时空升华，尽显神秘与浪漫。', img: './f1b65e9fdffe3972d639a1cc0fa43130.png' },
+        { num: '第四幕', title: '再次凝聚', desc: '以古蜀先民浮雕与神秘阶梯场景，拉开古蜀文明诞生的序幕，展现三星堆文明的初始脉络与神秘氛围。', img: './118010efb84403bc99b09c70108ca42b.png' },
+        { num: '第五幕', title: '看见文物', desc: '以傩戏音乐赋能交互，青铜面具、神树等文物粒子进行音画切换，融合古蜀祭祀与民俗韵律，唤醒文明的鲜活记忆与情感共鸣。', img: './65725304f56f03f16cfa6f868d0ed00b.png' },
+        { num: '第六幕', title: '再现历史', desc: '以抽象粒子光影演绎文明流变，古蜀符号随光影沉浮流转，勾勒千年文脉绵延轨迹，让三星堆精神在时空长河里永续回响。', img: './9756459f2a7db1b78885c8e7b64e7459.png' },
       ];
 
       return (
@@ -613,17 +612,15 @@
                 <div className="flex-1 bg-white p-4 border-4 border-black shadow-[-8px_8px_0_0_rgba(0,0,0,1)]">
                   <h3 className="text-2xl font-heavy-zh mb-2 italic">TD粒子技术与建模结合</h3>
                   <p className="font-bold text-gray-500 mb-4">用粒子效果重现三星堆文物</p>
-                  {/* 增加了 mt-6 将黑框下移，加入 flex 居中，并适当缩小图片占比留出边界 */}
                   <div className="w-full h-auto bg-black overflow-hidden relative group border-2 border-black flex justify-center items-center py-6 mt-6">
-                    <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/2de5423157ac6839de24e37e3880055ff8e318d7/6322d7333dbbdd7a6c3751537916d657.png" alt="TD粒子技术" className="w-11/12 h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-500 opacity-90" />
+                    <img src="./6322d7333dbbdd7a6c3751537916d657.png" alt="TD粒子技术" className="w-11/12 h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-500 opacity-90" />
                   </div>
                 </div>
                 <div className="flex-1 bg-black text-white p-4 border-4 border-white shadow-[8px_8px_0_0_var(--glitch-blue)]">
                   <h3 className="text-2xl font-heavy-zh mb-2 italic">视觉参考</h3>
                   <p className="font-bold text-gray-400 mb-4">艺术表现情绪表达</p>
-                  {/* 取消了固定正方形比例，改为自适应高度 (h-auto) */}
                   <div className="w-full h-auto bg-gray-900 overflow-hidden relative group border-2 border-white">
-                    <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/2de5423157ac6839de24e37e3880055ff8e318d7/f294013a918945e4eeb3fabe1841c74f.png" alt="视觉参考" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-90" />
+                    <img src="./f294013a918945e4eeb3fabe1841c74f.png" alt="视觉参考" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-90" />
                   </div>
                 </div>
               </div>
@@ -643,12 +640,6 @@
                   </div>
                   <div className="w-full md:w-2/3 bg-gray-200 border-4 border-black relative group aspect-video overflow-hidden">
                     <img src={act.img} alt={act.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                    {/* 智能判断：如果是未上传的本地图片则显示提示，如果是网络图片则自动隐藏提示 */}
-                    {act.img.startsWith('./') && (
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-600 font-bold mix-blend-difference pointer-events-none opacity-50 text-center px-4">
-                        [上传 {act.img.replace('./', '')} 以显示图片]
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
