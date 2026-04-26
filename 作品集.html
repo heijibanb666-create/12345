@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>施俊豪 - 数字艺术作品集</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-main: #000;
+      --text-inv: #fff;
+      --glitch-blue: #0047FF; 
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: var(--bg-color);
+      background-image: radial-gradient(#000 1px, transparent 1px);
+      background-size: 16px 16px;
+      font-family: 'Arial Black', 'Impact', 'PingFang SC', 'Microsoft YaHei', 'Heiti SC', sans-serif;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    @keyframes textFall {
+      0% { transform: translateY(-80vh) scale(2) rotate(15deg); opacity: 0; }
+      100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+    }
+    
+    @keyframes screenShake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-10px, 12px) rotate(-1deg); }
+      40% { transform: translate(10px, -10px) rotate(1deg); }
+      60% { transform: translate(-6px, -6px) rotate(0deg); }
+      80% { transform: translate(6px, 6px) rotate(1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    @keyframes dotAppear {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(-45deg); }
+      100% { transform: translate(-50%, -50%) scale(0.15) rotate(0deg); }
+    }
+
+    @keyframes burstExpand {
+      0% { transform: translate(-50%, -50%) scale(0.15) rotate(0deg); }
+      20% { transform: translate(-50%, -50%) scale(1.4) rotate(15deg); }
+      100% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+    }
+
+    .shard-element { opacity: 0; }
+
+    @keyframes splash1 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 100% { opacity: 1; transform: translate(calc(-50% - 30vw), calc(-50% - 20vh)) scale(0.2) rotate(-90deg); } }
+    @keyframes splash2 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1.5) rotate(0deg); } 100% { opacity: 1; transform: translate(calc(-50% + 35vw), calc(-50% - 15vh)) scale(0.3) rotate(120deg); } }
+    @keyframes splash3 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(0deg); } 100% { opacity: 1; transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) scale(0.1) rotate(-150deg); } }
+    @keyframes splash4 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8) rotate(0deg); } 100% { opacity: 1; transform: translate(calc(-50% + 30vw), calc(-50% + 20vh)) scale(0.4) rotate(80deg); } }
+    @keyframes splash5 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 100% { opacity: 1; transform: translate(calc(-50% - 10vw), calc(-50% - 35vh)) scale(0) rotate(-45deg); } }
+    @keyframes splash6 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(0deg); } 100% { opacity: 1; transform: translate(calc(-50% + 10vw), calc(-50% + 30vh)) scale(0.2) rotate(60deg); } }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .clip-burst {
+      clip-path: polygon(
+        0% 15%, 20% 20%, 10% 0%, 35% 15%, 50% 0%, 
+        65% 15%, 90% 0%, 80% 20%, 100% 15%, 90% 35%, 
+        100% 50%, 85% 65%, 100% 85%, 80% 80%, 90% 100%, 
+        65% 85%, 50% 100%, 35% 85%, 10% 100%, 20% 80%, 
+        0% 85%, 15% 65%, 0% 50%, 10% 35%
+      );
+    }
+    
+    .clip-shard-1 { clip-path: polygon(0% 10%, 100% 0%, 80% 100%, 20% 90%); }
+    .clip-shard-2 { clip-path: polygon(10% 0%, 100% 20%, 90% 100%, 0% 80%); }
+    .clip-shard-3 { clip-path: polygon(50% 0%, 100% 80%, 0% 100%); }
+
+    @keyframes sliceInRight {
+      0% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); opacity: 0; transform: translateX(50px); }
+      100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; transform: translateX(0); }
+    }
+    @keyframes stampIn {
+      0% { transform: scale(3) rotate(15deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes textSlam {
+      0% { transform: translate(100vw, -50vh) rotate(45deg) scale(2); opacity: 0; }
+      100% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+    }
+    @keyframes pulseHacker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes p5GlitchBg {
+      0%   { background-color: #fff; color: #000; transform: scale(1.05) skewX(-10deg) translate(0px, 0px); }
+      10%  { background-color: var(--glitch-blue); color: #fff; transform: scale(1.06) skewX(-12deg) translate(-4px, 2px); }
+      20%  { background-color: #000; color: #fff; transform: scale(1.04) skewX(-8deg) translate(4px, -2px); }
+      30%  { background-color: #fff; color: #000; transform: scale(1.05) skewX(-11deg) translate(-2px, 4px); }
+      40%  { background-color: var(--glitch-blue); color: #fff; transform: scale(1.06) skewX(-9deg) translate(2px, -4px); }
+      50%  { background-color: #000; color: #fff; transform: scale(1.04) skewX(-13deg) translate(-4px, -2px); }
+      60%  { background-color: #fff; color: #000; transform: scale(1.05) skewX(-10deg) translate(4px, 2px); }
+      70%  { background-color: var(--glitch-blue); color: #fff; transform: scale(1.06) skewX(-12deg) translate(-2px, -1px); }
+      80%  { background-color: #000; color: #fff; transform: scale(1.04) skewX(-7deg) translate(1px, 4px); }
+      90%  { background-color: #fff; color: #000; transform: scale(1.05) skewX(-11deg) translate(3px, -3px); }
+      100% { background-color: #fff; color: #000; transform: scale(1.05) skewX(-10deg) translate(0px, 0px); }
+    }
+    @keyframes p5GlitchOutline {
+      0%   { transform: translate(6px, 6px); border-color: var(--glitch-blue); }
+      25%  { transform: translate(-6px, -4px); border-color: #000; }
+      50%  { transform: translate(4px, -6px); border-color: #fff; }
+      75%  { transform: translate(-4px, 6px); border-color: var(--glitch-blue); }
+      100% { transform: translate(0px, 0px); border-color: transparent; }
+    }
+
+    .glitch-hover { transition: transform 0.2s ease-out; }
+    
+    @media (hover: hover) and (pointer: fine) {
+      .glitch-hover:hover {
+        animation: p5GlitchBg 0.8s infinite step-end !important;
+        border: 4px solid black !important;
+        z-index: 50;
+        outline: none;
+      }
+      .glitch-hover:hover::after {
+        content: '';
+        position: absolute;
+        top: -4px; left: -4px; right: -4px; bottom: -4px;
+        border: 3px solid var(--glitch-blue);
+        animation: p5GlitchOutline 0.6s infinite step-end;
+        pointer-events: none;
+        z-index: 20;
+      }
+    }
+
+    .glitch-hover:active {
+      animation: p5GlitchBg 0.8s infinite step-end !important;
+      border: 4px solid black !important;
+      z-index: 50;
+      outline: none;
+    }
+    .glitch-hover:active::after {
+      content: '';
+      position: absolute;
+      top: -4px; left: -4px; right: -4px; bottom: -4px;
+      border: 3px solid var(--glitch-blue);
+      animation: p5GlitchOutline 0.6s infinite step-end;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .clip-slanted { clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); }
+    .clip-jagged { clip-path: polygon(0% 5%, 95% 0%, 100% 95%, 5% 100%); }
+    .anim-slice-r { animation: sliceInRight 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+    .anim-stamp { animation: stampIn 0.3s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
+    .anim-slam { animation: textSlam 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
+    
+    .hide-scroll::-webkit-scrollbar { display: none; }
+    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .font-heavy-zh { font-weight: 900; letter-spacing: 2px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // === 首页 ===
+    const HomePage = ({ onEnter }) => {
+      return (
+        <div 
+          className="w-full h-[100dvh] bg-transparent relative overflow-hidden cursor-pointer" 
+          onClick={onEnter}
+          style={{ animation: 'screenShake 0.4s ease-out 0.3s forwards' }}
+        >
+          <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none pb-48 md:pb-0">
+            <div className="relative w-[90vw] h-[45vw] md:w-[600px] md:h-[300px]">
+              <div 
+                className="absolute top-1/2 left-1/2 w-full h-full bg-black clip-burst"
+                style={{ animation: 'dotAppear 0.3s ease-out forwards, burstExpand 0.7s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}
+              ></div>
+              <div className="absolute top-1/2 left-1/2 w-[15vw] md:w-24 h-[10vw] md:h-16 bg-black clip-shard-1 shard-element" style={{ animation: 'splash1 0.6s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}></div>
+              <div className="absolute top-1/2 left-1/2 w-[10vw] md:w-16 h-[15vw] md:h-24 bg-black clip-shard-2 shard-element" style={{ animation: 'splash2 0.7s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}></div>
+              <div className="absolute top-1/2 left-1/2 w-[20vw] md:w-32 h-[12vw] md:h-20 bg-black clip-shard-3 shard-element" style={{ animation: 'splash3 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}></div>
+              <div className="absolute top-1/2 left-1/2 w-[12vw] md:w-20 h-[12vw] md:h-20 bg-black clip-shard-1 shard-element" style={{ animation: 'splash4 0.8s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}></div>
+              <div className="absolute top-1/2 left-1/2 w-[18vw] md:w-28 h-[8vw] md:h-12 bg-black clip-shard-2 shard-element" style={{ animation: 'splash5 0.65s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}></div>
+              <div className="absolute top-1/2 left-1/2 w-[8vw] md:w-14 h-[15vw] md:h-24 bg-black clip-shard-3 shard-element" style={{ animation: 'splash6 0.55s cubic-bezier(0.1, 0.9, 0.2, 1) 0.3s forwards' }}></div>
+            </div>
+          </div>
+
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mix-blend-difference text-white z-10 w-full px-4 pb-48 md:pb-0">
+            <h1 className="text-[4.5rem] min-[375px]:text-6xl sm:text-7xl md:text-[10rem] font-heavy-zh italic tracking-widest leading-none m-0 text-center whitespace-nowrap" style={{ animation: 'textFall 0.3s cubic-bezier(0.5, 0, 1, 1) forwards' }}>
+              作品集
+            </h1>
+            <div 
+              className="bg-white text-black px-4 md:px-8 py-2 mt-4 md:mt-8 text-lg md:text-3xl font-heavy-zh clip-slanted opacity-0" 
+              style={{ animation: 'fadeUp 0.5s ease-out 0.8s forwards' }}
+            >
+              数字艺术与交互设计
+            </div>
+          </div>
+            
+          <div className="absolute inset-x-0 bottom-32 md:bottom-12 flex justify-center z-20 pointer-events-none">
+            <div 
+              className="text-base md:text-xl font-heavy-zh tracking-widest uppercase opacity-0 text-black" 
+              style={{ animation: 'fadeUp 0.5s ease-out 1.2s forwards' }}
+            >
+              <span style={{ animation: 'pulseHacker 1.5s infinite 1.7s' }}>点击任意位置开始</span>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // === 菜单页 ===
+    const MenuPage = ({ onNavigate }) => {
+      const menuItems = [
+        { id: 'gallery', cn: '作品画廊', en: 'GALLERY', angle: -4, delay: '0.1s' },
+        { id: 'profile', cn: '个人档案', en: 'PROFILE', angle: 3, delay: '0.2s' }
+      ];
+
+      return (
+        <div className="w-full h-[100dvh] relative bg-transparent overflow-hidden">
+          <div className="absolute top-0 right-0 w-[85%] md:w-3/4 h-full bg-black anim-slice-r" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)', animationDelay: '0s' }}></div>
+          <div className="absolute top-4 md:top-10 left-[-5%] w-1/3 md:w-1/4 h-1/2 bg-white border-4 md:border-8 border-black clip-slanted" style={{ animation: 'sliceIn 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) 0.1s forwards', opacity: 0 }}></div>
+
+          <div className="absolute top-6 left-4 md:top-8 md:left-8 z-20">
+            <h2 className="text-5xl md:text-8xl font-black text-black italic anim-stamp leading-tight" style={{ WebkitTextStroke: '1px white', animationDelay: '0.5s' }}>
+              MENU<br/>& SYS
+            </h2>
+          </div>
+
+          <div className="absolute top-[30%] md:top-1/3 right-4 md:right-32 flex flex-col items-end gap-8 md:gap-12 z-30">
+            {menuItems.map((item, index) => (
+              <div 
+                key={item.id}
+                className="anim-slam opacity-0 w-full flex justify-end"
+                style={{ 
+                  animationDelay: item.delay,
+                  animationFillMode: 'forwards'
+                }}
+              >
+                <button
+                  onClick={() => onNavigate(item.id)}
+                  onTouchStart={() => {}}
+                  className="group relative flex items-center justify-end w-[85vw] max-w-[320px] md:max-w-none md:w-[500px] p-4 md:p-6 bg-black text-white cursor-pointer glitch-hover border-4 border-transparent"
+                  style={{ 
+                    transform: `rotate(${item.angle}deg)`, 
+                    clipPath: 'polygon(5% 0, 100% 0, 95% 100%, 0 100%)'
+                  }}
+                >
+                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4=')] opacity-50 pointer-events-none"></div>
+                  
+                  <div className="relative z-10 text-right pointer-events-none">
+                    <div className="text-4xl md:text-6xl font-heavy-zh italic">{item.cn}</div>
+                    <div className="text-sm md:text-xl font-bold tracking-widest opacity-70 uppercase mt-1">{item.en}</div>
+                  </div>
+                  <div className="absolute left-6 md:left-8 text-4xl md:text-6xl font-black opacity-20 italic pointer-events-none">
+                    0{index + 1}
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // === 作品画廊页 ===
+    const GalleryPage = ({ onBack, onNavigate }) => {
+      const projects = [
+        { 
+          id: 1, 
+          title: 'SANXINGDUI·CODE-X', 
+          subtitle: '沉浸式空间设计', 
+          img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/main/111.png',
+          fallback: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+          route: 'project-sanxingdui' 
+        },
+        { 
+          id: 2, 
+          title: '瓷艺坊', 
+          subtitle: '视觉与UI设计', 
+          img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/main/%E5%90%AF%E5%8A%A8.jpg',
+          fallback: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+          route: 'project-ciyifang'
+        }
+      ];
+
+      return (
+        <div className="w-full h-[100dvh] bg-black text-white overflow-y-auto overflow-x-hidden hide-scroll relative pb-32">
+          <div className="sticky top-0 z-50 w-full flex justify-between items-center p-4 md:p-6 bg-black border-b-4 border-white anim-slice-r">
+            <button 
+              onClick={onBack} 
+              onTouchStart={() => {}}
+              className="text-base md:text-xl font-heavy-zh bg-white text-black px-4 md:px-6 py-2 clip-slanted glitch-hover transition-colors border-4 border-transparent cursor-pointer"
+            >
+              &lt; MENU
+            </button>
+            <h2 className="text-2xl md:text-4xl font-heavy-zh italic tracking-widest">GALLERY</h2>
+          </div>
+
+          <div className="flex flex-col items-center mt-8 md:mt-12 gap-12 md:gap-20 px-4 md:px-8">
+            {projects.map((proj, index) => (
+              <div 
+                key={proj.id} 
+                onClick={() => onNavigate(proj.route)}
+                className="w-full max-w-4xl relative anim-slam opacity-0 cursor-pointer group"
+                style={{ 
+                  animationDelay: `${0.2 * (index + 1)}s`,
+                  animationFillMode: 'forwards' 
+                }}
+              >
+                <div className="absolute inset-0 bg-white clip-jagged transform translate-x-2 translate-y-2 md:translate-x-4 md:translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition-transform duration-300"></div>
+                
+                <div className="relative bg-black border-2 md:border-4 border-white clip-jagged p-2 md:p-4 pb-4 md:pb-6 group-hover:border-[var(--glitch-blue)] transition-colors duration-300">
+                  <div className="relative h-48 sm:h-64 md:h-96 w-full overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+                    <img 
+                      src={proj.img} 
+                      onError={(e) => { e.target.onerror = null; e.target.src = proj.fallback; }} 
+                      alt={proj.title} 
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
+                    />
+                    
+                    <div className="absolute bottom-2 md:bottom-4 left-0 md:left-4 bg-white text-black px-6 md:px-8 py-1 md:py-2 clip-slanted font-heavy-zh text-lg sm:text-2xl md:text-4xl italic shadow-xl">
+                      {proj.title}
+                    </div>
+
+                    <div className="absolute top-4 right-4 bg-[var(--glitch-blue)] text-white px-4 py-1 font-black italic tracking-widest clip-jagged opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-xl">
+                      VIEW PROJECT
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 md:mt-6 flex justify-between items-end pl-6 pr-2 md:pl-10 md:pr-4">
+                    <div className="text-base sm:text-xl md:text-2xl font-heavy-zh tracking-widest">{proj.subtitle}</div>
+                    <div className="text-2xl md:text-4xl font-black italic opacity-20">NO.0{index + 1}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // === 《瓷艺坊》项目详情页 ===
+    const ProjectCiyifangPage = ({ onBack }) => {
+      return (
+        <div className="w-full h-[100dvh] bg-[var(--bg-color)] text-black overflow-y-auto overflow-x-hidden hide-scroll relative pb-32">
+          
+          <div className="sticky top-0 z-50 w-full flex justify-between items-center p-4 md:p-6 bg-black border-b-4 border-white anim-slice-r">
+            <button 
+              onClick={onBack} 
+              className="text-base md:text-xl font-heavy-zh bg-white text-black px-4 md:px-6 py-2 clip-slanted glitch-hover border-4 border-transparent cursor-pointer"
+            >
+              &lt; BACK
+            </button>
+            <h2 className="text-xl md:text-2xl font-heavy-zh italic tracking-widest text-white">CI YI FANG</h2>
+          </div>
+
+          <div className="max-w-6xl mx-auto px-4 md:px-8 mt-12 flex flex-col gap-16 md:gap-24">
+            
+            <div className="anim-slam opacity-0" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
+              <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-heavy-zh italic tracking-widest leading-none m-0">
+                瓷艺坊
+              </h1>
+              <div className="inline-block bg-black text-white px-6 py-2 mt-4 text-xl md:text-3xl font-heavy-zh clip-slanted">
+                科普小游戏 / UI界面设计
+              </div>
+            </div>
+
+            {/* 01. 项目介绍 */}
+            <div className="flex flex-col md:flex-row gap-8 anim-slam opacity-0" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+              <div className="w-full md:w-1/3">
+                <h2 className="text-4xl md:text-5xl font-black italic border-l-8 border-[var(--glitch-blue)] pl-4">01 /<br/>项目介绍</h2>
+              </div>
+              <div className="w-full md:w-2/3 flex flex-col gap-6">
+                <div className="bg-white py-6 md:py-8 clip-jagged border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]" style={{ paddingLeft: '6%', paddingRight: '6%' }}>
+                  <h3 className="text-2xl font-heavy-zh mb-3">项目背景</h3>
+                  <p className="text-base md:text-lg font-bold leading-relaxed opacity-90 text-justify">
+                    <strong className="text-[var(--glitch-blue)]">历史与文化价值：</strong>德化白瓷（中国白）拥有从新石器时代至今的悠久历史，具有极高的艺术与收藏价值。<br/><br/>
+                    <strong className="text-[var(--glitch-blue)]">市场学习痛点：</strong>当前用户面临缺乏系统性陶瓷工艺学习资源、难以找到行业专家交流平台、以及对传统文化了解渠道有限等痛点。<br/><br/>
+                    <strong className="text-[var(--glitch-blue)]">数字化传播趋势：</strong>基于德化窑作为“活态遗产”的特性，亟需通过数字技术（如3D展示、云端模拟）来增强文化的现代传播力。
+                  </p>
+                </div>
+                <div className="bg-black text-white py-6 md:py-8 clip-slanted border-4 border-white" style={{ paddingLeft: '12%', paddingRight: '12%' }}>
+                  <h3 className="text-2xl font-heavy-zh mb-3">设计目标</h3>
+                  <p className="text-base md:text-lg font-bold leading-relaxed opacity-90 text-justify">
+                    <strong>文化传承与普及：</strong>旨在传承推广德化白瓷历史，通过教育普及吸引国内外用户。<br/>
+                    <strong>强化沉浸式互动：</strong>利用数字展示与云端模拟制作流程，提升科普的趣味性与参与度。<br/>
+                    <strong>赋能文旅与产业：</strong>通过展示文化魅力吸引游客，推动地方经济增长。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 02. 产品定位和设计策略 */}
+            <div className="flex flex-col md:flex-row-reverse gap-8 anim-slam opacity-0" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
+              <div className="w-full md:w-1/3 text-left md:text-right">
+                <h2 className="text-4xl md:text-5xl font-black italic border-r-0 md:border-r-8 border-black pr-0 md:pr-4">02 /<br/>产品策略</h2>
+              </div>
+              <div className="w-full md:w-2/3 flex flex-col gap-6">
+                <div className="bg-white p-6 border-4 border-black border-dashed">
+                  <h3 className="text-2xl font-heavy-zh mb-3 bg-black text-white inline-block px-4 py-1">产品定位</h3>
+                  <p className="text-base md:text-lg font-bold mt-2">
+                    本项目定位为一款<strong>文化科普类型APP</strong>，核心任务是传承和推广德化白瓷的历史与文化。作为艺术展示中心，通过展示德化白瓷独特的工艺和艺术价值，吸引并教育用户。
+                  </p>
+                  <div className="flex flex-wrap gap-4 mt-4 font-black italic tracking-widest text-sm md:text-base">
+                    <span className="border-2 border-black px-3 py-1">#德化白瓷文化</span>
+                    <span className="border-2 border-black px-3 py-1">#游戏化结构交互</span>
+                    <span className="border-2 border-black px-3 py-1">#年轻化传播体验</span>
+                  </div>
+                </div>
+                <div className="bg-white py-6 md:py-8 clip-jagged border-4 border-black shadow-[-8px_8px_0_0_rgba(0,71,255,1)]" style={{ paddingLeft: '6%', paddingRight: '6%' }}>
+                  <h3 className="text-2xl font-heavy-zh mb-3">设计目标策略</h3>
+                  <ul className="space-y-4 text-base md:text-lg font-bold">
+                    <li><strong className="text-[var(--glitch-blue)]">视觉美学：</strong>秉持“简洁大气”的布局原则，选取与德化白瓷质感契合的米色、白色和浅棕色为主基调，使用典雅宋体字营造文化氛围。</li>
+                    <li><strong className="text-[var(--glitch-blue)]">信息架构：</strong>建立多维度的分类导航栏，支持关键词搜索，通过结构化框架解决用户“找不准、学不进”的痛点。</li>
+                    <li><strong className="text-[var(--glitch-blue)]">技术交互：</strong>突破传统图文框架，引入3D浏览与数字化模拟制作技术，将枯燥的陶瓷历史转化为可观、可感的数字体验。</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* 03. 用户画像 */}
+            <div className="flex flex-col gap-8 anim-slam opacity-0" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
+              <div className="text-center">
+                <h2 className="text-4xl md:text-5xl font-black italic inline-block bg-black text-white px-8 py-2 clip-slanted">03 / 用户画像</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-6 border-4 border-black flex flex-col items-center text-center shadow-xl">
+                  <div className="text-4xl mb-4">🎓</div>
+                  <h3 className="text-2xl font-heavy-zh mb-2">陶瓷专业大学生</h3>
+                  <p className="font-bold text-gray-500 mb-4">(专业学习者)</p>
+                  <p className="text-sm font-bold text-justify">
+                    <strong>核心需求：</strong>渴望获取德化白瓷传统工艺与创新方法，希望有交流平台。<br/><br/>
+                    <strong>行为痛点：</strong>目前缺乏系统性资源，难以找到与行业专家直接交流的渠道。
+                  </p>
+                </div>
+                <div className="bg-white p-6 border-4 border-black flex flex-col items-center text-center shadow-xl transform md:-translate-y-4">
+                  <div className="text-4xl mb-4">💼</div>
+                  <h3 className="text-2xl font-heavy-zh mb-2">普通工作者</h3>
+                  <p className="font-bold text-[var(--glitch-blue)] mb-4">(国潮文化追随者)</p>
+                  <p className="text-sm font-bold text-justify">
+                    <strong>核心需求：</strong>寻找具创意与现代设计感的文创产品，了解背后文化故事。<br/><br/>
+                    <strong>行为痛点：</strong>难以找到符合现代审美的传统产品，缺乏深入学习文化的渠道。
+                  </p>
+                </div>
+                <div className="bg-white p-6 border-4 border-black flex flex-col items-center text-center shadow-xl">
+                  <div className="text-4xl mb-4">🏺</div>
+                  <h3 className="text-2xl font-heavy-zh mb-2">陶瓷文化爱好者</h3>
+                  <p className="font-bold text-gray-500 mb-4">(资深艺术受众)</p>
+                  <p className="text-sm font-bold text-justify">
+                    <strong>核心需求：</strong>深入了解历史、制作工艺及艺术价值的系统化平台。<br/><br/>
+                    <strong>行为痛点：</strong>难以检索到系统化知识，缺乏与其他爱好者的互动平台。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 04. 视觉规范 */}
+            <div className="flex flex-col gap-8 anim-slam opacity-0" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+              <div className="w-full">
+                <h2 className="text-4xl md:text-5xl font-black italic border-l-8 border-black pl-4 mb-8">04 / 视觉规范</h2>
+              </div>
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="flex-1 bg-white py-6 md:py-8 border-4 border-black clip-jagged flex items-center justify-center gap-6" style={{ paddingLeft: '6%', paddingRight: '6%' }}>
+                  <div className="text-6xl font-serif font-bold text-[#30261e]">Aa</div>
+                  <div className="flex flex-col gap-2 font-bold">
+                    <span className="text-xl">标题 / 丰田皇冠字体</span>
+                    <span className="text-gray-500">正文 / 三极行楷简体</span>
+                  </div>
+                </div>
+                <div className="flex-1 flex gap-2 h-32">
+                  <div className="flex-1 bg-[#1b272a] border-2 border-black flex items-end p-2 text-white text-xs font-bold font-mono">#1b272a</div>
+                  <div className="flex-1 bg-[#f9f2e3] border-2 border-black flex items-end p-2 text-black text-xs font-bold font-mono">#f9f2e3</div>
+                  <div className="flex-1 bg-[#9f785c] border-2 border-black flex items-end p-2 text-white text-xs font-bold font-mono">#9f785c</div>
+                  <div className="flex-1 bg-[#30261e] border-2 border-black flex items-end p-2 text-white text-xs font-bold font-mono">#30261e</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 05. 界面设计展示 (更新：图片移入启动/登录模块并自适应高度) */}
+            <div className="flex flex-col gap-8 anim-slam opacity-0" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>
+              <div className="text-center mb-4">
+                <h2 className="text-4xl md:text-5xl font-black italic inline-block bg-[var(--glitch-blue)] text-white px-8 py-2 clip-jagged">05 / 界面展示</h2>
+              </div>
+              
+              <div className="w-full bg-white p-4 border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+                <h3 className="text-2xl font-heavy-zh mb-4 italic">高保真界面：启动 / 登录 / 游戏主页</h3>
+                <div className="w-full h-auto bg-gray-200 border-2 border-black overflow-hidden relative group">
+                  <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/main/6bdebb15ddfaebe0df2173c8252aee5d.png" alt="启动登录展示" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                </div>
+              </div>
+
+              <div className="w-full bg-white p-4 border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+                <h3 className="text-2xl font-heavy-zh mb-4 italic">高保真界面：游戏流程</h3>
+                <div className="aspect-video w-full bg-gray-200 border-2 border-black overflow-hidden relative group">
+                  <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/main/91fc443ad34dde945f9fd9295522b9c4.png" alt="游戏流程" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                </div>
+              </div>
+
+              <div className="w-full bg-black p-4 border-4 border-[var(--glitch-blue)] shadow-[8px_8px_0_0_var(--glitch-blue)]">
+                <h3 className="text-2xl font-heavy-zh mb-4 italic text-white">最终效果展示</h3>
+                <div className="aspect-video w-full bg-gray-800 border-2 border-white overflow-hidden relative group">
+                  <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/main/Mockup48.png" alt="效果展示" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                </div>
+              </div>
+
+            </div>
+
+            <div className="flex justify-center mt-8 pb-12">
+               <button 
+                  onClick={onBack}
+                  className="group relative bg-black text-white px-12 py-4 font-heavy-zh italic text-2xl tracking-widest clip-slanted glitch-hover border-4 border-transparent"
+               >
+                  返回画廊 BACK TO GALLERY
+               </button>
+            </div>
+
+          </div>
+        </div>
+      );
+    };
+
+    // === 《三星堆·CODE-X》项目详情页 ===
+    const ProjectSanxingduiPage = ({ onBack }) => {
+      
+      const interactionPoints = [
+        { title: '光影重构历史', desc: '利用动态光影技术还原古蜀国祭祀场景，通过数字特效重现神秘氛围，使观众仿佛穿越至数千年前的祭祀现场。' },
+        { title: '数字角色演绎', desc: '借助虚拟人物与动画技术，生动呈现祭司、信徒等角色的行为互动，使古代仪式过程更加具象化和富有叙事性。' },
+        { title: '特效增强叙事', desc: '利用粒子特效、光影渐变等数字手段强化关键情节表现，如火焰燃烧、神像显现等，增强故事感染力与视觉冲击力。' },
+        { title: '多维空间营造', desc: 'CAVE空间通过多角度投影打造沉浸式环境，结合音效与光影变化，增强用户对古蜀文化的空间感知与体验深度。' },
+        { title: '情景交互设计', desc: '观众可通过动作感应或触控设备参与虚拟祭祀，提升互动体验，实现从旁观者到参与者的身份转变。' },
+        { title: '文化解码表达', desc: '动态影像中融入三星堆图腾与符号解读，以光影为媒介传递古蜀文明内涵，帮助观众更直观理解文物背后的文化意义。' },
+      ];
+
+      const acts = [
+        { num: '第一幕', title: '起源', desc: '以古蜀先民浮雕与神秘阶梯场景，拉开古蜀文明诞生的序幕，展现三星堆文明的初始脉络与神秘氛围。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/2de5423157ac6839de24e37e3880055ff8e318d7/226c9736d3a0781c23063e6a818067ae.png' },
+        { num: '第二幕', title: '凝聚', desc: '以粒子特效呈现三星堆青铜神树，在光影流转中凝聚古蜀文明的神秘力量与精神图腾。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/fe99ccaad6baec32fa847ff6022c140c.png' },
+        { num: '第三幕', title: '飘散', desc: '以粒子光影解构青铜神树、纵目面具等核心文物，神鸟羽翼、神树枝干化作星尘飘散，演绎古蜀祭祀的告别与文明精神的时空升华，尽显神秘与浪漫。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/f1b65e9fdffe3972d639a1cc0fa43130.png' },
+        { num: '第四幕', title: '再次凝聚', desc: '以古蜀先民浮雕与神秘阶梯场景，拉开古蜀文明诞生的序幕，展现三星堆文明的初始脉络与神秘氛围。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/118010efb84403bc99b09c70108ca42b.png' },
+        // 已更新为新的图片链接
+        { num: '第五幕', title: '看见文物', desc: '以傩戏音乐赋能交互，青铜面具、神树等文物粒子进行音画切换，融合古蜀祭祀与民俗韵律，唤醒文明的鲜活记忆与情感共鸣。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/65725304f56f03f16cfa6f868d0ed00b.png' },
+        { num: '第六幕', title: '再现历史', desc: '以抽象粒子光影演绎文明流变，古蜀符号随光影沉浮流转，勾勒千年文脉绵延轨迹，让三星堆精神在时空长河里永续回响。', img: 'https://raw.githubusercontent.com/heijibanb666-create/12345/c8a808fd5704c422f0ff34a1c3c75df9eeaa90c1/9756459f2a7db1b78885c8e7b64e7459.png' },
+      ];
+
+      return (
+        <div className="w-full h-[100dvh] bg-[var(--bg-color)] text-black overflow-y-auto overflow-x-hidden hide-scroll relative pb-32">
+          
+          <div className="sticky top-0 z-50 w-full flex justify-between items-center p-4 md:p-6 bg-black border-b-4 border-white anim-slice-r">
+            <button 
+              onClick={onBack} 
+              className="text-base md:text-xl font-heavy-zh bg-white text-black px-4 md:px-6 py-2 clip-slanted glitch-hover border-4 border-transparent cursor-pointer"
+            >
+              &lt; BACK
+            </button>
+            <h2 className="text-xl md:text-2xl font-heavy-zh italic tracking-widest text-white">CODE-X</h2>
+          </div>
+
+          <div className="max-w-6xl mx-auto px-4 md:px-8 mt-12 flex flex-col gap-16 md:gap-24">
+            
+            <div className="anim-slam opacity-0" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
+              <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[7rem] font-heavy-zh italic tracking-widest leading-none m-0">
+                SANXINGDUI<br/>
+                <span className="text-[var(--glitch-blue)]">CODE-X</span>
+              </h1>
+              <div className="inline-block bg-black text-white px-6 py-2 mt-4 text-xl md:text-3xl font-heavy-zh clip-slanted">
+                CAVE空间 / 沉浸式体验
+              </div>
+            </div>
+
+            <div className="flex flex-col anim-slam opacity-0" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+              <h2 className="text-4xl md:text-5xl font-black italic border-l-8 border-[var(--glitch-blue)] pl-4 mb-6">01 /<br/>项目前言</h2>
+              <div className="bg-white py-8 md:py-12 clip-slanted border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]" style={{ paddingLeft: '12%', paddingRight: '12%' }}>
+                <p className="text-lg md:text-xl font-bold leading-relaxed opacity-90 text-justify">
+                  这是一个以三星堆古蜀文明为核心，依托 CAVE 沉浸式空间打造的前沿文化科技体验项目，旨在通过超现实的数字视觉叙事，让观众“闯入”神秘的古蜀世界，解码文明密码。<br/><br/>
+                  以三星堆青铜神树、纵目面具、金面具等镇馆之宝为灵感源，融合沉浸式空间设计、动态视觉艺术与交互科技，构建<strong className="text-[var(--glitch-blue)]">“可进入、可互动、可感知”</strong>的古蜀文明多维体验场域，兼具文化科普与艺术观赏双一价值。
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-8 anim-slam opacity-0" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
+              <div className="w-full text-right">
+                <h2 className="text-4xl md:text-5xl font-black italic border-r-8 border-black pr-4 mb-2">02 /<br/>叙事和交互</h2>
+                <p className="text-xl font-heavy-zh text-gray-500 mr-4">利用数字特效演绎古蜀国祭祀场景</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                {interactionPoints.map((point, i) => (
+                  <div key={i} className={`p-6 border-4 ${i % 2 === 0 ? 'bg-black text-white border-white clip-jagged' : 'bg-white text-black border-black clip-slanted'}`} style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+                    <h3 className={`text-2xl font-heavy-zh mb-3 ${i % 2 === 0 ? 'text-[var(--glitch-blue)]' : ''}`}>{point.title}</h3>
+                    <p className="font-bold opacity-90 text-justify leading-relaxed">{point.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-8 anim-slam opacity-0" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
+              <div className="text-center">
+                <h2 className="text-4xl md:text-5xl font-black italic inline-block bg-black text-white px-8 py-2 clip-slanted">03 / 技术与视觉展示</h2>
+              </div>
+              
+              <div className="flex flex-col md:flex-row gap-8 mt-6">
+                <div className="flex-1 bg-white p-4 border-4 border-black shadow-[-8px_8px_0_0_rgba(0,0,0,1)]">
+                  <h3 className="text-2xl font-heavy-zh mb-2 italic">TD粒子技术与建模结合</h3>
+                  <p className="font-bold text-gray-500 mb-4">用粒子效果重现三星堆文物</p>
+                  {/* 增加了 mt-6 将黑框下移，加入 flex 居中，并适当缩小图片占比留出边界 */}
+                  <div className="w-full h-auto bg-black overflow-hidden relative group border-2 border-black flex justify-center items-center py-6 mt-6">
+                    <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/2de5423157ac6839de24e37e3880055ff8e318d7/6322d7333dbbdd7a6c3751537916d657.png" alt="TD粒子技术" className="w-11/12 h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-500 opacity-90" />
+                  </div>
+                </div>
+                <div className="flex-1 bg-black text-white p-4 border-4 border-white shadow-[8px_8px_0_0_var(--glitch-blue)]">
+                  <h3 className="text-2xl font-heavy-zh mb-2 italic">视觉参考</h3>
+                  <p className="font-bold text-gray-400 mb-4">艺术表现情绪表达</p>
+                  {/* 取消了固定正方形比例，改为自适应高度 (h-auto) */}
+                  <div className="w-full h-auto bg-gray-900 overflow-hidden relative group border-2 border-white">
+                    <img src="https://raw.githubusercontent.com/heijibanb666-create/12345/2de5423157ac6839de24e37e3880055ff8e318d7/f294013a918945e4eeb3fabe1841c74f.png" alt="视觉参考" className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-90" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-12 anim-slam opacity-0" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+              <div className="w-full mb-4">
+                <h2 className="text-4xl md:text-5xl font-black italic border-l-8 border-black pl-4">04 / 空间叙事结构</h2>
+              </div>
+              
+              {acts.map((act, index) => (
+                <div key={index} className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-6 items-stretch`}>
+                  <div className={`w-full md:w-1/3 flex flex-col justify-center bg-white border-4 border-black p-6 ${index % 2 === 0 ? 'clip-jagged shadow-[6px_6px_0_0_rgba(0,0,0,1)]' : 'clip-slanted shadow-[-6px_6px_0_0_var(--glitch-blue)]'}`} style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+                    <div className="text-lg font-black text-[var(--glitch-blue)] mb-1">{act.num}</div>
+                    <h3 className="text-3xl font-heavy-zh mb-4 italic">{act.title}</h3>
+                    <p className="font-bold leading-relaxed text-justify opacity-90">{act.desc}</p>
+                  </div>
+                  <div className="w-full md:w-2/3 bg-gray-200 border-4 border-black relative group aspect-video overflow-hidden">
+                    <img src={act.img} alt={act.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                    {/* 智能判断：如果是未上传的本地图片则显示提示，如果是网络图片则自动隐藏提示 */}
+                    {act.img.startsWith('./') && (
+                      <div className="absolute inset-0 flex items-center justify-center text-gray-600 font-bold mix-blend-difference pointer-events-none opacity-50 text-center px-4">
+                        [上传 {act.img.replace('./', '')} 以显示图片]
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-12 pb-12">
+               <button 
+                  onClick={onBack}
+                  className="group relative bg-black text-white px-12 py-4 font-heavy-zh italic text-2xl tracking-widest clip-slanted glitch-hover border-4 border-transparent"
+               >
+                  返回画廊 BACK TO GALLERY
+               </button>
+            </div>
+
+          </div>
+        </div>
+      );
+    };
+
+    // === 个人档案页 (Profile) ===
+    const ProfilePage = ({ onBack }) => {
+      return (
+        <div className="w-full h-[100dvh] bg-black text-white overflow-y-auto overflow-x-hidden hide-scroll relative pb-32">
+          <div className="sticky top-0 z-50 w-full flex justify-between items-center p-4 md:p-6 bg-black border-b-4 border-white anim-slice-r">
+            <button 
+              onClick={onBack} 
+              onTouchStart={() => {}}
+              className="text-base md:text-xl font-heavy-zh bg-white text-black px-4 md:px-6 py-2 clip-slanted glitch-hover transition-colors border-4 border-transparent cursor-pointer"
+            >
+              &lt; MENU
+            </button>
+            <h2 className="text-2xl md:text-4xl font-heavy-zh italic tracking-widest uppercase">Profile</h2>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-8 md:gap-12 px-4 md:px-12 mt-8 md:mt-12 max-w-7xl mx-auto">
+            
+            <div className="flex-1 flex flex-col gap-8 md:gap-12">
+              
+              <div className="relative anim-slam opacity-0 bg-white text-black py-6 md:py-8 clip-slanted" style={{ animationDelay: '0.1s', animationFillMode: 'forwards', paddingLeft: '12%', paddingRight: '12%' }}>
+                <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+                  <div className="w-32 h-40 md:w-40 md:h-48 shrink-0 bg-gray-300 clip-jagged overflow-hidden border-4 border-black shadow-xl">
+                    <img 
+                      src="./profile.jpg" 
+                      onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80'; }} 
+                      alt="施俊豪" 
+                      className="w-full h-full object-cover transition-all duration-300" 
+                    />
+                  </div>
+                  <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                    <h1 className="text-5xl md:text-7xl font-heavy-zh italic mb-4">施俊豪</h1>
+                    <p className="font-bold text-lg md:text-xl tracking-widest mb-1">籍贯：福建</p>
+                    <p className="font-bold text-lg md:text-xl tracking-widest">经验：两年+</p>
+                  </div>
+                </div>
+                <div className="mt-6 md:mt-8 border-t-4 border-black pt-4 font-bold text-sm sm:text-base md:text-lg tracking-wider flex flex-col gap-2">
+                  <p>电话：13815286789</p>
+                  <p>联系邮箱：1987033661@qq.com</p>
+                </div>
+              </div>
+
+              <div className="relative anim-slam opacity-0 bg-black border-4 border-white py-6 md:py-8 clip-jagged" style={{ animationDelay: '0.2s', animationFillMode: 'forwards', paddingLeft: '6%', paddingRight: '6%' }}>
+                <div className="mb-8">
+                  <h3 className="text-2xl md:text-3xl font-heavy-zh italic mb-4 bg-white text-black inline-block px-6 py-1 clip-slanted">教育背景</h3>
+                  <p className="text-xl md:text-2xl font-bold tracking-widest pl-2">全日制本科</p>
+                  <p className="text-xl md:text-2xl font-bold opacity-80 tracking-widest pl-2 mt-2">数字媒体专业</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-heavy-zh italic mb-4 bg-white text-black inline-block px-6 py-1 clip-slanted">求职意向</h3>
+                  <p className="text-lg md:text-xl font-bold leading-relaxed tracking-wider pl-2">
+                    UI设计师 / 动画设计师 /<br />3D建模师 / 2D动画设计师
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="flex-1 flex flex-col gap-8 md:gap-12">
+              
+              <div className="relative anim-slam opacity-0 bg-black border-4 border-white py-6 md:py-8 clip-jagged" style={{ animationDelay: '0.3s', animationFillMode: 'forwards', paddingLeft: '6%', paddingRight: '6%' }}>
+                <h3 className="text-2xl md:text-3xl font-heavy-zh italic mb-6 bg-white text-black inline-block px-6 py-1 clip-slanted">软件技能</h3>
+                <ul className="text-lg md:text-xl font-bold space-y-3 opacity-90 uppercase tracking-widest pl-2">
+                  <li className="flex items-center gap-2"><span className="text-[var(--glitch-blue)] text-2xl">▶</span> adobe ps/ai/ae/pr</li>
+                  <li className="flex items-center gap-2"><span className="text-[var(--glitch-blue)] text-2xl">▶</span> figma/xd</li>
+                  <li className="flex items-center gap-2"><span className="text-[var(--glitch-blue)] text-2xl">▶</span> ue</li>
+                  <li className="flex items-center gap-2"><span className="text-[var(--glitch-blue)] text-2xl">▶</span> blender/maya</li>
+                  <li className="flex items-center gap-2"><span className="text-[var(--glitch-blue)] text-2xl">▶</span> spine</li>
+                </ul>
+              </div>
+
+              <div className="relative anim-slam opacity-0 bg-white text-black py-6 md:py-8 clip-slanted" style={{ animationDelay: '0.4s', animationFillMode: 'forwards', paddingLeft: '12%', paddingRight: '12%' }}>
+                <h3 className="text-2xl md:text-3xl font-heavy-zh italic mb-6 bg-black text-white inline-block px-6 py-1 clip-jagged">实习经历</h3>
+                <div className="pl-2">
+                  <p className="text-2xl font-black italic tracking-wider">2025.6 — 2025.9</p>
+                  <p className="text-2xl md:text-3xl font-heavy-zh mt-3">大庆思特科技</p>
+                  <p className="text-lg md:text-xl font-bold mt-2 opacity-80 tracking-widest">沉浸式cave动画制作实习</p>
+                </div>
+              </div>
+
+              <div className="relative anim-slam opacity-0 bg-black border-4 border-white py-6 md:py-8 clip-jagged" style={{ animationDelay: '0.5s', animationFillMode: 'forwards', paddingLeft: '6%', paddingRight: '6%' }}>
+                <h3 className="text-2xl md:text-3xl font-heavy-zh italic mb-6 bg-white text-black inline-block px-6 py-1 clip-slanted">获得荣誉</h3>
+                <ul className="text-base md:text-lg font-bold space-y-4 opacity-90 tracking-wider pl-2">
+                  <li className="border-b border-gray-600 pb-2">✦ 米兰设计周中国高校北京赛区三等奖</li>
+                  <li className="border-b border-gray-600 pb-2">✦ 第七届香港当代设计奖银奖</li>
+                  <li className="border-b border-gray-600 pb-2">✦ 日本概念艺术设计奖铜奖</li>
+                  <li className="border-b border-gray-600 pb-2">✦ “华夏奖”文化设计大赛三等奖</li>
+                  <li>✦ 北京设计马拉松银奖</li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // === 主路由控制 ===
+    function App() {
+      const [currentPage, setCurrentPage] = useState('home');
+
+      const renderPage = () => {
+        switch (currentPage) {
+          case 'home': return <HomePage onEnter={() => setCurrentPage('menu')} />;
+          case 'menu': return <MenuPage onNavigate={(page) => setCurrentPage(page)} />;
+          case 'gallery': return <GalleryPage onBack={() => setCurrentPage('menu')} onNavigate={(page) => setCurrentPage(page)} />;
+          case 'profile': return <ProfilePage onBack={() => setCurrentPage('menu')} />;
+          case 'project-ciyifang': return <ProjectCiyifangPage onBack={() => setCurrentPage('gallery')} />;
+          case 'project-sanxingdui': return <ProjectSanxingduiPage onBack={() => setCurrentPage('gallery')} />;
+          default: return <HomePage onEnter={() => setCurrentPage('menu')} />;
+        }
+      };
+
+      return (
+        <div key={currentPage} className="w-full h-full">
+          {renderPage()}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
